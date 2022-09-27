@@ -10,6 +10,6 @@ This was very lite and no such error control information for use. but for theory
 
 Create a new note in trilium with Note type [JS backend](https://github.com/zadam/trilium/wiki/Code-notes) and name to what your want.
 
-Copy the [webdav.js](webdav.js) to this note.
+Copy the [webdav.js](webdav.js) to this note, replace the username and password.
 
 Click the Execute button when your want to upload to webdav server.
