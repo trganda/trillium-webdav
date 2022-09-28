@@ -11,7 +11,7 @@ globalConfig = {
     responseType: 'text'
 }
 
-const remotebakdir = "/trilium-data-test";
+const remotebakdir = "/trilium-data";
 const localdata = api.getAppInfo()['dataDirectory'];
 
 async function exists(context, filename) {
