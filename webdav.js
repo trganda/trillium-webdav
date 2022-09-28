@@ -1,7 +1,6 @@
 const axios = require('axios');
-const fs = require('fs');
-const path = require('path');
-const { dirname } = require('path');
+const { readdir, stat, readFileSync } = require('fs');
+const { dirname, join } = require('path');
 
 globalConfig = {
     baseURL: 'https://dav.jianguoyun.com/dav/',
@@ -12,11 +11,11 @@ globalConfig = {
     responseType: 'text'
 }
 
-const remotebakdir = "/trilium-data";
+const remotebakdir = "/trilium-data-test";
 const localdata = api.getAppInfo()['dataDirectory'];
 
 async function exists(context, filename) {
-    client = axios.create(context)
+    let client = axios.create(context)
     let ret;
     await client.request({
         method: 'PROPFIND',
@@ -44,7 +43,7 @@ async function exists(context, filename) {
 }
 
 async function createDirectory(context, path, recursive) {
-    client = axios.create(context)
+    let client = axios.create(context)
 
     if (recursive == true)
         createDirectoryRecursively(context, path);
@@ -64,7 +63,7 @@ async function createDirectory(context, path, recursive) {
 }
 
 function getAllDirectories(dir) {
-    paths = []
+    let paths = []
     if (!dir || dir === '/') {
         return paths;
     }
@@ -102,22 +101,21 @@ async function putFileContents(context, filePath, data, overwrite) {
 }
 
 function dirTrval(absolutedir, relativedir) {
-    fs.readdir(absolutedir, function(err, files){
+    readdir(absolutedir, function(err, files){
         if (err) {
             console.warn(err);
         } else {
             files.forEach(function(filename) {
-                let filepath = path.join(absolutedir, filename);
-                // console.log(currentPath);
-                fs.stat(filepath, async function(err, stats) {
-                    let puturi = path.join(remotebakdir, relativedir, filename).replaceAll('\\', '/');
+                let filepath = join(absolutedir, filename);
+                stat(filepath, async function(err, stats) {
+                    let puturi = join(remotebakdir, relativedir, filename).replaceAll('\\', '/');
                     if (err) {
                         console.warn(err);
                     } else {
                         if (stats.isFile()) {
                             // Uploading the file.
                             console.log(puturi);
-                            let data = fs.readFileSync(filepath);
+                            let data = readFileSync(filepath);
                             putFileContents(globalConfig, puturi, data, true);
                         } else if (stats.isDirectory()) {
                             // Create directory remotely
